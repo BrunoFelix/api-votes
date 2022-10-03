@@ -1,20 +1,20 @@
 version: '3'
 
 services:
-  db:
+  mysql:
     image: mysql:5.7
     restart: always
     environment:
-      MYSQL_DATABASE: 'dbapivotes'
-      MYSQL_USER: 'admin'
-      MYSQL_PASSWORD: 'fY9@16'
-      MYSQL_ROOT_PASSWORD: '9bM58^'
+      MYSQL_DATABASE: 'dbvotes'
+      MYSQL_USER: 'votes'
+      MYSQL_PASSWORD: 'votes'
+      MYSQL_ROOT_PASSWORD: 'votes'
     ports:
       - '3306:3306'
     expose:
       - '3306'
     volumes:
-      - dbapivotes:/var/lib/mysql
+      - dbvotes:/var/lib/mysql
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -52,7 +52,7 @@ services:
       KAFKA_BROKERCONNECT: kafka:29092
 
 volumes:
-  dbapivotes:
+  dbvotes:
 
 networks:
   broker-kafka:
