@@ -30,4 +30,8 @@ public class VotingSession {
 
     @OneToMany(mappedBy = "votingSession", cascade = CascadeType.ALL)
     private List<Vote> votes;
+
+    @Column(name = "created_by")
+    @NotNull
+    private LocalDateTime createdBy = LocalDateTime.now();
 }
