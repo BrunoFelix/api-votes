@@ -56,7 +56,8 @@ public class AssociateIntegrationTest extends DatabaseContainerConfiguration {
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.cpf").value(associateRequestDto.getCpf()))
-                .andExpect(jsonPath("$.name").value(associateRequestDto.getName()));
+                .andExpect(jsonPath("$.name").value(associateRequestDto.getName()))
+                .andExpect(jsonPath("$.created_at").exists());
     }
 
     @Test
@@ -90,7 +91,7 @@ public class AssociateIntegrationTest extends DatabaseContainerConfiguration {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.content[0]").exists())
-                .andExpect(jsonPath("$.totalElements").value(1));
+                .andExpect(jsonPath("$.total_elements").value(1));
     }
 
 }
