@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,6 +23,7 @@ public class Agenda {
     private String description;
 
     @Column(name = "created_at")
+    @NotNull
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public Agenda(String description) {

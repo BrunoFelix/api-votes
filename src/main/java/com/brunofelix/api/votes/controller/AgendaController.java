@@ -28,13 +28,13 @@ public class AgendaController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<AgendaResponseDto> findAll(@PageableDefault(sort = "id", direction = Sort.Direction.ASC, size = Integer.MAX_VALUE) Pageable pageable) {
-        return agendaService.findAll(pageable);
+    public Page<AgendaResponseDto> getAll(@PageableDefault(sort = "id", direction = Sort.Direction.ASC, size = Integer.MAX_VALUE) Pageable pageable) {
+        return agendaService.getAll(pageable);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public AgendaResponseDto findById(@PathVariable Long id) {
-        return agendaService.findById(id);
+    public AgendaResponseDto getById(@PathVariable Long id) {
+        return agendaService.getById(id);
     }
 }

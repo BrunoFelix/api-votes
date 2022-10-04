@@ -18,16 +18,19 @@ public class AgendaService {
 
     public AgendaResponseDto create(AgendaRequestDto agendaRequestDto) {
         Agenda agenda = new Agenda(agendaRequestDto.getDescription());
-        agenda = agendaRepository.save(agenda);
 
-        return new AgendaResponseDto(agenda);
+        return new AgendaResponseDto(agendaRepository.save(agenda));
     }
 
-    public Page<AgendaResponseDto> findAll(Pageable pageable) {
+    public Page<AgendaResponseDto> getAll(Pageable pageable) {
         return agendaRepository.findAll(pageable).map(AgendaResponseDto::new);
     }
 
-    public AgendaResponseDto findById(Long id) {
-        return new AgendaResponseDto(agendaRepository.findById(id).orElseThrow(AssociateNotFoundException::new));
+    public AgendaResponseDto getById(Long id) {
+        return new AgendaResponseDto(this.findById(id));
+    }
+
+    protected Agenda findById(Long id) {
+        return agendaRepository.findById(id).orElseThrow(AssociateNotFoundException::new);
     }
 }

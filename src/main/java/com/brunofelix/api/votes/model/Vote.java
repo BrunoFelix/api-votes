@@ -25,8 +25,8 @@ public class Vote {
     private Associate associate;
 
     @ManyToOne
-    @JoinColumn(name = "voting_session_id")
-    private VotingSession votingSession;
+    @JoinColumn(name = "vote_session_id")
+    private VoteSession voteSession;
 
     public enum Option {
         YES("yes"),

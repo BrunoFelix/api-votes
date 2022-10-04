@@ -28,13 +28,13 @@ public class AssociateController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<AssociateResponseDto> findAll(@PageableDefault(sort = "name", direction = Sort.Direction.ASC, size = Integer.MAX_VALUE) Pageable pageable) {
-        return associateService.findAll(pageable);
+    public Page<AssociateResponseDto> getAll(@PageableDefault(sort = "name", direction = Sort.Direction.ASC, size = Integer.MAX_VALUE) Pageable pageable) {
+        return associateService.getAll(pageable);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public AssociateResponseDto findById(@PathVariable Long id) {
-        return associateService.findById(id);
+    public AssociateResponseDto getById(@PathVariable Long id) {
+        return associateService.getById(id);
     }
 }

@@ -41,12 +41,16 @@ public class AssociateService {
         return new AssociateResponseDto(associate);
     }
 
-    public Page<AssociateResponseDto> findAll(Pageable pageable) {
+    public Page<AssociateResponseDto> getAll(Pageable pageable) {
         return associateRepository.findAll(pageable).map(AssociateResponseDto::new);
     }
 
-    public AssociateResponseDto findById(Long id) {
-        return new AssociateResponseDto(associateRepository.findById(id).orElseThrow(AssociateNotFoundException::new));
+    public AssociateResponseDto getById(Long id) {
+        return new AssociateResponseDto(this.findById(id));
+    }
+
+    protected Associate findById(Long id) {
+        return associateRepository.findById(id).orElseThrow(AssociateNotFoundException::new);
     }
 
     private Boolean validateCpf(String cpf) {
