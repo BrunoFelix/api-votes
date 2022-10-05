@@ -61,7 +61,7 @@ public class AssociateIntegrationTest extends DatabaseContainerConfiguration {
     }
 
     @Test
-    @DisplayName("When I try to create associate with CPF invalid Then Then return an error")
+    @DisplayName("When I try to create associate with CPF invalid Then return an exception")
     public void createAssociateInvalid() throws Exception {
         AssociateRequestDto associateRequestDto = new AssociateRequestDto("00000000000", "Associate test");
 

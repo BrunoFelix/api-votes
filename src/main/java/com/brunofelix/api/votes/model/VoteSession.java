@@ -44,4 +44,8 @@ public class VoteSession {
         this.closingAt = closingAt;
         this.agenda = agenda;
     }
+
+    public boolean checkVotingFinished() {
+        return (this.getFinished() || this.closingAt.isBefore(LocalDateTime.now()));
+    }
 }

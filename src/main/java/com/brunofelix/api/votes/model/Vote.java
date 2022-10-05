@@ -1,10 +1,13 @@
 package com.brunofelix.api.votes.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "vote")
@@ -19,7 +22,7 @@ public class Vote {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "value")
-    private Option value;
+    private Value value;
 
     @OneToOne
     private Associate associate;
@@ -28,18 +31,18 @@ public class Vote {
     @JoinColumn(name = "vote_session_id")
     private VoteSession voteSession;
 
-    public enum Option {
-        YES("yes"),
-        NO("no");
+    @Column(name = "created_at")
+    @NotNull
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-        private String description;
+    public enum Value {
+        YES,
+        NO;
+    }
 
-        Option(String description) {
-            this.description = description;
-        }
-
-        public String toString() {
-            return description;
-        }
+    public Vote(Value value, Associate associate, VoteSession voteSession) {
+        this.value = value;
+        this.associate = associate;
+        this.voteSession = voteSession;
     }
 }
