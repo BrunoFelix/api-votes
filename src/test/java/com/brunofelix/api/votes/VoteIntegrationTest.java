@@ -162,7 +162,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
 
         VoteRequestDto voteRequestDto = new VoteRequestDto(savedAssociate.getId(), savedVoteSession.getId(), Vote.Value.YES);
 
-        voteRepository.save(new Vote(voteRequestDto.getValue(), savedAssociate, savedVoteSession));
+        voteRepository.save(new Vote(voteRequestDto.getValue(), savedAssociate, savedVoteSession.getAgenda(), savedVoteSession));
 
         mockMvc.perform(post("/v1/vote")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -185,7 +185,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
 
         VoteRequestDto voteRequestDto = new VoteRequestDto(savedAssociate.getId(), savedVoteSession.getId(), Vote.Value.YES);
 
-        Vote vote = voteRepository.save(new Vote(voteRequestDto.getValue(), savedAssociate, savedVoteSession));
+        Vote vote = voteRepository.save(new Vote(voteRequestDto.getValue(), savedAssociate, savedVoteSession.getAgenda(), savedVoteSession));
 
         mockMvc.perform(get("/v1/vote/{id}", vote.getId())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -227,7 +227,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
 
         VoteRequestDto voteRequestDto = new VoteRequestDto(savedAssociate.getId(), savedVoteSession.getId(), Vote.Value.YES);
 
-        Vote vote = voteRepository.save(new Vote(voteRequestDto.getValue(), savedAssociate, savedVoteSession));
+        Vote vote = voteRepository.save(new Vote(voteRequestDto.getValue(), savedAssociate, savedVoteSession.getAgenda(), savedVoteSession));
 
         mockMvc.perform(get("/v1/vote/associate/{id}", savedAssociate.getId())
                         .contentType(MediaType.APPLICATION_JSON))

@@ -14,6 +14,5 @@ public class VoteSessionRequestDto {
     @NotNull
     private Long agendaId;
 
-    @NotNull @FutureOrPresent
-    private LocalDateTime closingAt = LocalDateTime.now().minusMinutes(1);
+    private LocalDateTime closingAt = LocalDateTime.now().plusMinutes(1);
 }

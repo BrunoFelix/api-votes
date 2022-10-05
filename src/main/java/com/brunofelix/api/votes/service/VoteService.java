@@ -33,13 +33,13 @@ public class VoteService {
         //The vote session service throws an exception if the record does not exist
         VoteSession voteSession = voteSessionService.findById(voteRequestDto.getVoteSessionId());
 
-        if (voteSession.checkVotingFinished())
+        if (voteSession.checkVotingSessionFinished())
             throw new VoteSessionClosedException();
 
         if (voteRepository.existsByAssociateAndVoteSession(associate, voteSession))
             throw new VoteAlreadyRegisteredException();
 
-        Vote vote = new Vote(voteRequestDto.getValue(), associate, voteSession);
+        Vote vote = new Vote(voteRequestDto.getValue(), associate, voteSession.getAgenda(), voteSession);
 
         return new VoteResponseDto(voteRepository.save(vote));
     }
@@ -55,5 +55,9 @@ public class VoteService {
 
     protected Vote findById(Long id) {
         return voteRepository.findById(id).orElseThrow(VoteNotFoundException::new);
+    }
+
+    public VoteResponseDto getByVoteSession(Long id) {
+        return new VoteResponseDto(this.findById(id));
     }
 }

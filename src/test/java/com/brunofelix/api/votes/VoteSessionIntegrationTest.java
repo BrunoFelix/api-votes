@@ -76,6 +76,37 @@ public class VoteSessionIntegrationTest extends DatabaseContainerConfiguration {
     }
 
     @Test
+    @DisplayName("When I try to create vote session without closingAt Then vote session is created")
+    public void createVoteSessionWithoutClosingAt() throws Exception {
+        Agenda agenda = new Agenda("Agenda test");
+        agendaRepository.save(agenda);
+
+        LocalDateTime closingAt = LocalDateTime.now().plusHours(1);
+        VoteSessionRequestDto voteSessionRequestDto = new VoteSessionRequestDto(agenda.getId(), null);
+
+        mockMvc.perform(post("/v1/vote-session")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(voteSessionRequestDto)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.agenda_id").value(agenda.getId()))
+                .andExpect(jsonPath("$.closing_at").value(closingAt.toString()))
+                .andExpect(jsonPath("$.finished").value(false))
+                .andExpect(jsonPath("$.created_at").exists())
+                .andExpect(jsonPath("$.votes.length()").value(0));
+
+        List<VoteSession> voteSessions = voteSessionRepository.findAll();
+        assertEquals(voteSessions.size(), 1);
+        assertEquals(voteSessions.get(0).getAgenda().getId(), agenda.getId());
+        assertEquals(voteSessions.get(0).getClosingAt(), closingAt);
+        assertEquals(voteSessions.get(0).getFinished(), false);
+        assertEquals(voteSessions.get(0).getCreatedAt(), LocalDateTime.now());
+        assertEquals(voteSessions.get(0).getVotes().size(), 0);
+
+    }
+
+    @Test
     @DisplayName("When I try to get all vote sessions Then it should list of all vote sessions")
     public void getById() throws Exception {
         Agenda agenda = new Agenda("Agenda test");

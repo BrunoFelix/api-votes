@@ -46,7 +46,8 @@ public class AgendaIntegrationTest extends DatabaseContainerConfiguration {
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.description").value(agendaRequestDto.getDescription()))
-                .andExpect(jsonPath("$.created_at").exists());
+                .andExpect(jsonPath("$.created_at").exists())
+                .andExpect(jsonPath("$.result_votes.length()").value(0));
     }
 
     @Test

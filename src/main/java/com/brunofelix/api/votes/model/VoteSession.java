@@ -2,7 +2,7 @@ package com.brunofelix.api.votes.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "vote_session")
 @Data
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class VoteSession {
 
     @Id
@@ -23,7 +23,7 @@ public class VoteSession {
 
     @Column(name = "closing_at")
     @NotNull
-    private LocalDateTime closingAt = LocalDateTime.now().minusMinutes(1);
+    private LocalDateTime closingAt = LocalDateTime.now().plusMinutes(1);
 
     @OneToOne
     @JoinColumn(name = "agenda_id")
@@ -31,7 +31,7 @@ public class VoteSession {
     private Agenda agenda;
 
     @OneToMany(mappedBy = "voteSession", cascade = CascadeType.ALL)
-    private List<Vote> votes = new ArrayList<Vote>();
+    private List<Vote> votes = new ArrayList<>();
 
     @Column(name = "created_at")
     @NotNull
@@ -45,7 +45,7 @@ public class VoteSession {
         this.agenda = agenda;
     }
 
-    public boolean checkVotingFinished() {
+    public boolean checkVotingSessionFinished() {
         return (this.getFinished() || this.closingAt.isBefore(LocalDateTime.now()));
     }
 }

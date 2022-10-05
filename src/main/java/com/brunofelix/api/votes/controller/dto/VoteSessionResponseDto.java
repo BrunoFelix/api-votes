@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -26,12 +27,15 @@ public class VoteSessionResponseDto {
 
     private List<Vote> votes;
 
-    public VoteSessionResponseDto (VoteSession voteSession) {
+    private List<VoteResultDto> ResultVotes;
+
+    public VoteSessionResponseDto (VoteSession voteSession, List<VoteResultDto> ResultVotes) {
         this.id = voteSession.getId();
         this.agendaId = voteSession.getAgenda().getId();
         this.finished = voteSession.getFinished();
         this.closingAt = voteSession.getClosingAt();
         this.createdAt = voteSession.getCreatedAt();
         this.votes = voteSession.getVotes();
+        this.ResultVotes = (ResultVotes) == null ? new ArrayList<>() : ResultVotes;
     }
 }

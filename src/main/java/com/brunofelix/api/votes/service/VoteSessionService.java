@@ -1,11 +1,13 @@
 package com.brunofelix.api.votes.service;
 
+import com.brunofelix.api.votes.controller.dto.VoteResultDto;
 import com.brunofelix.api.votes.controller.dto.VoteSessionRequestDto;
 import com.brunofelix.api.votes.controller.dto.VoteSessionResponseDto;
 import com.brunofelix.api.votes.exception.VoteSessionAlreadyRegisteredException;
 import com.brunofelix.api.votes.exception.VoteSessionClosingAtInvalidException;
 import com.brunofelix.api.votes.exception.VoteSessionNotFoundException;
 import com.brunofelix.api.votes.model.Agenda;
+import com.brunofelix.api.votes.model.Vote;
 import com.brunofelix.api.votes.model.VoteSession;
 import com.brunofelix.api.votes.repository.VoteSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VoteSessionService {
@@ -31,23 +35,38 @@ public class VoteSessionService {
         if (voteSessionRepository.findByAgenda(agenda).isPresent())
             throw new VoteSessionAlreadyRegisteredException();
 
-        if (voteSessionRequestDto.getClosingAt().isBefore(LocalDateTime.now()) || voteSessionRequestDto.getClosingAt().isEqual(LocalDateTime.now()))
-            throw new VoteSessionClosingAtInvalidException();
-
         VoteSession voteSession = new VoteSession(voteSessionRequestDto.getClosingAt(), agenda);
 
-        return new VoteSessionResponseDto(voteSessionRepository.save(voteSession));
+        if (voteSession.checkVotingSessionFinished())
+            throw new VoteSessionClosingAtInvalidException();
+
+        return new VoteSessionResponseDto(voteSessionRepository.save(voteSession), null);
     }
 
     public Page<VoteSessionResponseDto> getAll(Pageable pageable) {
-        return voteSessionRepository.findAll(pageable).map(VoteSessionResponseDto::new);
+        return voteSessionRepository.findAll(pageable).map(voteSession -> new VoteSessionResponseDto(voteSession, this.getVoteResult(voteSession)));
     }
 
     public VoteSessionResponseDto getById(Long id) {
-        return new VoteSessionResponseDto(this.findById(id));
+        VoteSession voteSession = this.findById(id);
+        return new VoteSessionResponseDto(voteSession, this.getVoteResult(voteSession));
     }
 
     protected VoteSession findById(Long id) {
         return voteSessionRepository.findById(id).orElseThrow(VoteSessionNotFoundException::new);
+    }
+
+    private List<VoteResultDto> getVoteResult(VoteSession voteSession) {
+        return voteSession.getVotes().stream().collect(Collectors.groupingBy(Vote::getValue, Collectors.counting())).entrySet()
+                .stream()
+                .map(e -> new VoteResultDto(e.getKey(), e.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    public void closeVoteSessions() {
+        voteSessionRepository.findByClosingAtBeforeAndFinished(LocalDateTime.now(), false).stream().forEach(voteSession -> {
+                voteSession.setFinished(true);
+                voteSessionRepository.save(voteSession);
+        });
     }
 }

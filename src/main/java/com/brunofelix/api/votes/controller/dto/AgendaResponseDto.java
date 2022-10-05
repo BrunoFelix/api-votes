@@ -4,6 +4,8 @@ import com.brunofelix.api.votes.model.Agenda;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class AgendaResponseDto {
@@ -12,9 +14,12 @@ public class AgendaResponseDto {
     private String description;
     private LocalDateTime createdAt;
 
-    public AgendaResponseDto (Agenda agenda) {
+    private List<VoteResultDto> ResultVotes;
+
+    public AgendaResponseDto (Agenda agenda, List<VoteResultDto> resultVotes) {
         this.id = agenda.getId();
         this.description = agenda.getDescription();
         this.createdAt = agenda.getCreatedAt();
+        this.ResultVotes = (ResultVotes) == null ? new ArrayList<>() : ResultVotes;
     }
 }
