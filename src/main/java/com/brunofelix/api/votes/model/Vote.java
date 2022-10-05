@@ -28,13 +28,8 @@ public class Vote {
     private Associate associate;
 
     @ManyToOne
-    @JoinColumn(name = "agenda_id")
-    private Agenda agenda;
-
-    @ManyToOne
     @JoinColumn(name = "vote_session_id")
     private VoteSession voteSession;
-
 
     @Column(name = "created_at")
     @NotNull
@@ -45,10 +40,9 @@ public class Vote {
         NO;
     }
 
-    public Vote(Value value, Associate associate, Agenda agenda, VoteSession voteSession) {
+    public Vote(Value value, Associate associate, VoteSession voteSession) {
         this.value = value;
         this.associate = associate;
-        this.agenda = agenda;
         this.voteSession = voteSession;
     }
 }

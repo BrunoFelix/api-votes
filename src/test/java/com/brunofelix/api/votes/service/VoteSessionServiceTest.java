@@ -69,7 +69,7 @@ public class VoteSessionServiceTest {
         Assertions.assertEquals(voteSessionResponseDto.getAgendaId(), this.voteSession.getAgenda().getId());
         Assertions.assertEquals(voteSessionResponseDto.getClosingAt(), this.voteSession.getClosingAt());
         Assertions.assertEquals(voteSessionResponseDto.getVotes().size(), this.voteSession.getVotes().size());
-        Assertions.assertEquals(voteSessionResponseDto.getResults().size(), 0);
+        Assertions.assertEquals(voteSessionResponseDto.getResultVotes().size(), 0);
     }
 
     @Test

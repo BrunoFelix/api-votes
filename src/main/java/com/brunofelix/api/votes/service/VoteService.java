@@ -39,7 +39,7 @@ public class VoteService {
         if (voteRepository.existsByAssociateAndVoteSession(associate, voteSession))
             throw new VoteAlreadyRegisteredException();
 
-        Vote vote = new Vote(voteRequestDto.getValue(), associate, voteSession.getAgenda(), voteSession);
+        Vote vote = new Vote(voteRequestDto.getValue(), associate, voteSession);
 
         return new VoteResponseDto(voteRepository.save(vote));
     }

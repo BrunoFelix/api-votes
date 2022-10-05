@@ -25,17 +25,17 @@ public class VoteSessionResponseDto {
 
     private LocalDateTime createdAt;
 
-    private List<Vote> votes;
+    private List<VoteResponseDto> votes;
 
     private List<VoteResultDto> ResultVotes;
 
-    public VoteSessionResponseDto (VoteSession voteSession, List<VoteResultDto> ResultVotes) {
+    public VoteSessionResponseDto (VoteSession voteSession, List<VoteResponseDto> votes, List<VoteResultDto> ResultVotes) {
         this.id = voteSession.getId();
         this.agendaId = voteSession.getAgenda().getId();
         this.finished = voteSession.getFinished();
         this.closingAt = voteSession.getClosingAt();
         this.createdAt = voteSession.getCreatedAt();
-        this.votes = voteSession.getVotes();
+        this.votes = votes;
         this.ResultVotes = (ResultVotes) == null ? new ArrayList<>() : ResultVotes;
     }
 }

@@ -25,12 +25,11 @@ public class VoteSession {
     @NotNull
     private LocalDateTime closingAt = LocalDateTime.now().plusMinutes(1);
 
-    @OneToOne
+    @OneToOne(optional = false)
     @JoinColumn(name = "agenda_id")
-    @NotNull
     private Agenda agenda;
 
-    @OneToMany(mappedBy = "voteSession", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "voteSession")
     private List<Vote> votes = new ArrayList<>();
 
     @Column(name = "created_at")

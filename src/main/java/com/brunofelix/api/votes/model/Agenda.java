@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "agenda")
@@ -24,8 +22,8 @@ public class Agenda {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "agenda", cascade = CascadeType.ALL)
-    private List<Vote> votes = new ArrayList<>();
+    @OneToOne(mappedBy = "agenda")
+    private VoteSession voteSession;
 
     @Column(name = "created_at")
     @NotNull

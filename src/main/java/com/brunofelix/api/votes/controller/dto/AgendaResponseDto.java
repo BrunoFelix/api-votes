@@ -20,6 +20,6 @@ public class AgendaResponseDto {
         this.id = agenda.getId();
         this.description = agenda.getDescription();
         this.createdAt = agenda.getCreatedAt();
-        this.ResultVotes = (ResultVotes) == null ? new ArrayList<>() : ResultVotes;
+        this.ResultVotes = resultVotes;
     }
 }

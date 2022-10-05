@@ -1,5 +1,6 @@
 package com.brunofelix.api.votes.service;
 
+import com.brunofelix.api.votes.controller.dto.VoteResponseDto;
 import com.brunofelix.api.votes.controller.dto.VoteResultDto;
 import com.brunofelix.api.votes.controller.dto.VoteSessionRequestDto;
 import com.brunofelix.api.votes.controller.dto.VoteSessionResponseDto;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,16 +42,18 @@ public class VoteSessionService {
         if (voteSession.checkVotingSessionFinished())
             throw new VoteSessionClosingAtInvalidException();
 
-        return new VoteSessionResponseDto(voteSessionRepository.save(voteSession), null);
+        return new VoteSessionResponseDto(voteSessionRepository.save(voteSession), null, null);
     }
 
     public Page<VoteSessionResponseDto> getAll(Pageable pageable) {
-        return voteSessionRepository.findAll(pageable).map(voteSession -> new VoteSessionResponseDto(voteSession, this.getVoteResult(voteSession)));
+        return voteSessionRepository.findAll(pageable).map(
+                voteSession -> new VoteSessionResponseDto(voteSession, voteSession.getVotes().stream().map(VoteResponseDto::new).collect(Collectors.toList()), this.getVoteResult(voteSession))
+        );
     }
 
     public VoteSessionResponseDto getById(Long id) {
         VoteSession voteSession = this.findById(id);
-        return new VoteSessionResponseDto(voteSession, this.getVoteResult(voteSession));
+        return new VoteSessionResponseDto(voteSession, voteSession.getVotes().stream().map(VoteResponseDto::new).collect(Collectors.toList()), this.getVoteResult(voteSession));
     }
 
     protected VoteSession findById(Long id) {
@@ -57,10 +61,10 @@ public class VoteSessionService {
     }
 
     private List<VoteResultDto> getVoteResult(VoteSession voteSession) {
-        return voteSession.getVotes().stream().collect(Collectors.groupingBy(Vote::getValue, Collectors.counting())).entrySet()
-                .stream()
-                .map(e -> new VoteResultDto(e.getKey(), e.getValue()))
-                .collect(Collectors.toList());
+        return Arrays.stream(Vote.Value.values()).map(value -> {
+            Long count = voteSession.getVotes().stream().filter(vote -> vote.getValue() == value).count();
+            return new VoteResultDto(value, count);
+        }).collect(Collectors.toList());
     }
 
     public void closeVoteSessions() {

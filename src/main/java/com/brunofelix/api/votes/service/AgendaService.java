@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,9 +45,9 @@ public class AgendaService {
     }
 
     private List<VoteResultDto> getVoteResult(Agenda agenda) {
-        return agenda.getVotes().stream().collect(Collectors.groupingBy(Vote::getValue, Collectors.counting())).entrySet()
-                .stream()
-                .map(e -> new VoteResultDto(e.getKey(), e.getValue()))
-                .collect(Collectors.toList());
+        return Arrays.stream(Vote.Value.values()).map(value -> {
+            Long count = (agenda.getVoteSession() != null) ? agenda.getVoteSession().getVotes().stream().filter(vote -> vote.getValue() == value).count() : 0L;
+            return new VoteResultDto(value, count);
+        }).collect(Collectors.toList());
     }
 }
