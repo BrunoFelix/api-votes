@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface VoteRepository extends JpaRepository<Vote, Long> {
 
-    public Boolean existsByAssociateAndVoteSession(Associate associate, VoteSession voteSession);
+    Boolean existsByAssociateAndVoteSession(Associate associate, VoteSession voteSession);
 
-    public Page<Vote> findByAssociate(Associate associate, Pageable pageable);
+    Page<Vote> findByAssociate(Associate associate, Pageable pageable);
 }

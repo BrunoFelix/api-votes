@@ -1,13 +1,11 @@
 package com.brunofelix.api.votes.service;
 
-import com.brunofelix.api.votes.controller.dto.AssociateResponseDto;
 import com.brunofelix.api.votes.controller.dto.VoteSessionRequestDto;
 import com.brunofelix.api.votes.controller.dto.VoteSessionResponseDto;
-import com.brunofelix.api.votes.exception.AssociateNotFoundException;
+import com.brunofelix.api.votes.exception.VoteSessionAlreadyRegisteredException;
 import com.brunofelix.api.votes.exception.VoteSessionClosingAtInvalidException;
 import com.brunofelix.api.votes.exception.VoteSessionNotFoundException;
 import com.brunofelix.api.votes.model.Agenda;
-import com.brunofelix.api.votes.model.Associate;
 import com.brunofelix.api.votes.model.VoteSession;
 import com.brunofelix.api.votes.repository.VoteSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +27,9 @@ public class VoteSessionService {
     public VoteSessionResponseDto create(VoteSessionRequestDto voteSessionRequestDto) {
         //The agenda service throws an exception if the record does not exist
         Agenda agenda = agendaService.findById(voteSessionRequestDto.getAgendaId());
+
+        if (voteSessionRepository.findByAgenda(agenda).isPresent())
+            throw new VoteSessionAlreadyRegisteredException();
 
         if (voteSessionRequestDto.getClosingAt().isBefore(LocalDateTime.now()) || voteSessionRequestDto.getClosingAt().isEqual(LocalDateTime.now()))
             throw new VoteSessionClosingAtInvalidException();

@@ -4,4 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Agenda not found!")
-public class AgendaNotFoundException extends RuntimeException {}
+public class AgendaNotFoundException extends RuntimeException {
+    public static final String reasonMessage = "Agenda not found!";
+}

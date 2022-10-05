@@ -4,4 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.CONFLICT, reason = "CPF already registered!")
-public class CpfAlreadyRegisteredException extends RuntimeException {}
+public class CpfAlreadyRegisteredException extends RuntimeException {
+    public static final String reasonMessage = "CPF already registered!";
+}

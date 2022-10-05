@@ -11,7 +11,6 @@ import com.brunofelix.api.votes.repository.AssociateRepository;
 import com.brunofelix.api.votes.repository.VoteRepository;
 import com.brunofelix.api.votes.repository.VoteSessionRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -169,7 +168,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(voteRequestDto)))
                 .andExpect(status().isConflict())
-                .andExpect(status().reason(VoteDuplicatedException.reasonMessage));
+                .andExpect(status().reason(VoteAlreadyRegisteredException.reasonMessage));
 
         List<Vote> dbVotes = voteRepository.findAll();
         assertEquals(dbVotes.size(), 1);

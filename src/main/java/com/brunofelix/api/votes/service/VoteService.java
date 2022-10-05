@@ -2,11 +2,9 @@ package com.brunofelix.api.votes.service;
 
 import com.brunofelix.api.votes.controller.dto.VoteRequestDto;
 import com.brunofelix.api.votes.controller.dto.VoteResponseDto;
-import com.brunofelix.api.votes.controller.dto.VoteSessionResponseDto;
-import com.brunofelix.api.votes.exception.VoteDuplicatedException;
+import com.brunofelix.api.votes.exception.VoteAlreadyRegisteredException;
 import com.brunofelix.api.votes.exception.VoteNotFoundException;
 import com.brunofelix.api.votes.exception.VoteSessionClosedException;
-import com.brunofelix.api.votes.exception.VoteSessionNotFoundException;
 import com.brunofelix.api.votes.model.Associate;
 import com.brunofelix.api.votes.model.Vote;
 import com.brunofelix.api.votes.model.VoteSession;
@@ -39,7 +37,7 @@ public class VoteService {
             throw new VoteSessionClosedException();
 
         if (voteRepository.existsByAssociateAndVoteSession(associate, voteSession))
-            throw new VoteDuplicatedException();
+            throw new VoteAlreadyRegisteredException();
 
         Vote vote = new Vote(voteRequestDto.getValue(), associate, voteSession);
 
