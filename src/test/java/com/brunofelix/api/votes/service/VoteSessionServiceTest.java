@@ -18,6 +18,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -68,8 +70,6 @@ public class VoteSessionServiceTest {
         Assertions.assertEquals(voteSessionResponseDto.getId(), this.voteSession.getId());
         Assertions.assertEquals(voteSessionResponseDto.getAgendaId(), this.voteSession.getAgenda().getId());
         Assertions.assertEquals(voteSessionResponseDto.getClosingAt(), this.voteSession.getClosingAt());
-        Assertions.assertEquals(voteSessionResponseDto.getVotes().size(), this.voteSession.getVotes().size());
-        Assertions.assertEquals(voteSessionResponseDto.getResultVotes().size(), 0);
     }
 
     @Test
@@ -95,5 +95,16 @@ public class VoteSessionServiceTest {
         Mockito.when(voteSessionRepository.findById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThrows(VoteSessionNotFoundException.class, () -> { voteSessionService.getById(1L); });
+    }
+
+    @Test
+    void shouldCloseVoteSessions() {
+        List<VoteSession> voteSessionList = new ArrayList<>();
+        voteSessionList.add(this.voteSession);
+        Mockito.when(voteSessionRepository.findByClosingAtBeforeAndFinished(any(), any())).thenReturn(voteSessionList);
+
+        voteSessionService.closeVoteSessions();
+
+        Assertions.assertEquals(this.voteSession.getFinished(), true);
     }
 }

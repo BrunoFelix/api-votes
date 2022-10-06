@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -56,6 +57,9 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
 
     private Agenda agenda;
 
+    @Value("${api.path.version.vote}")
+    private String pathVersionEndpointApi;
+
     @BeforeEach
     public void setup() {
         voteRepository.deleteAll();
@@ -76,7 +80,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
 
         VoteRequestDto voteRequestDto = new VoteRequestDto(savedAssociate.getId(), savedVoteSession.getId(), Vote.Value.YES);
 
-        mockMvc.perform(post("/v1/vote")
+        mockMvc.perform(post(this.pathVersionEndpointApi)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(voteRequestDto)))
                 .andExpect(status().isCreated())
@@ -105,7 +109,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
 
         VoteRequestDto voteRequestDto = new VoteRequestDto(Long.parseLong("999"), savedVoteSession.getId(), Vote.Value.YES);
 
-        mockMvc.perform(post("/v1/vote")
+        mockMvc.perform(post(this.pathVersionEndpointApi)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(voteRequestDto)))
                 .andExpect(status().isNotFound())
@@ -122,7 +126,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
 
         VoteRequestDto voteRequestDto = new VoteRequestDto(savedAssociate.getId(), Long.parseLong("999"), Vote.Value.YES);
 
-        mockMvc.perform(post("/v1/vote")
+        mockMvc.perform(post(this.pathVersionEndpointApi)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(voteRequestDto)))
                 .andExpect(status().isNotFound())
@@ -142,7 +146,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
 
         VoteRequestDto voteRequestDto = new VoteRequestDto(savedAssociate.getId(), savedVoteSession.getId(), Vote.Value.YES);
 
-        mockMvc.perform(post("/v1/vote")
+        mockMvc.perform(post(this.pathVersionEndpointApi)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(voteRequestDto)))
                 .andExpect(status().isBadRequest())
@@ -164,7 +168,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
 
         voteRepository.save(new Vote(voteRequestDto.getValue(), savedAssociate, savedVoteSession));
 
-        mockMvc.perform(post("/v1/vote")
+        mockMvc.perform(post(this.pathVersionEndpointApi)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(voteRequestDto)))
                 .andExpect(status().isConflict())
@@ -187,7 +191,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
 
         Vote vote = voteRepository.save(new Vote(voteRequestDto.getValue(), savedAssociate, savedVoteSession));
 
-        mockMvc.perform(get("/v1/vote/{id}", vote.getId())
+        mockMvc.perform(get(this.pathVersionEndpointApi + "/{id}", vote.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.id").value(vote.getId()))
@@ -208,7 +212,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
     @Test
     @DisplayName("When I try to get vote by id not found Then return a exception")
     public void getByIdNotFound() throws Exception {
-        mockMvc.perform(get("/v1/vote/{id}", 999)
+        mockMvc.perform(get(this.pathVersionEndpointApi + "/{id}", 999)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(status().reason(VoteNotFoundException.reasonMessage));
@@ -229,7 +233,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
 
         Vote vote = voteRepository.save(new Vote(voteRequestDto.getValue(), savedAssociate, savedVoteSession));
 
-        mockMvc.perform(get("/v1/vote/associate/{id}", savedAssociate.getId())
+        mockMvc.perform(get(this.pathVersionEndpointApi + "/associate/{id}", savedAssociate.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
