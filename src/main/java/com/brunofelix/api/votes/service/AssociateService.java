@@ -2,6 +2,7 @@ package com.brunofelix.api.votes.service;
 
 import com.brunofelix.api.votes.controller.dto.AssociateRequestDto;
 import com.brunofelix.api.votes.controller.dto.AssociateResponseDto;
+import com.brunofelix.api.votes.event.AssociateCreatedEvent;
 import com.brunofelix.api.votes.exception.AssociateNotFoundException;
 import com.brunofelix.api.votes.exception.CpfAlreadyRegisteredException;
 import com.brunofelix.api.votes.exception.CpfInvalidException;
@@ -10,12 +11,16 @@ import com.brunofelix.api.votes.repository.AssociateRepository;
 import com.brunofelix.api.votes.service.client.CpfServiceClient;
 import com.brunofelix.api.votes.service.client.dto.CpfResponseDto;
 import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 @Service
 public class AssociateService {
 
@@ -24,6 +29,9 @@ public class AssociateService {
     private AssociateRepository associateRepository;
     @Autowired
     private CpfServiceClient cpfServiceClient;
+
+    @Autowired
+    private KafkaService kafkaService;
 
     public AssociateResponseDto create(AssociateRequestDto associateRequestDto) {
         if (associateRepository.findByCpf(associateRequestDto.getCpf()).isPresent()) {
@@ -36,9 +44,11 @@ public class AssociateService {
         }
 
         Associate associate = new Associate(associateRequestDto.getCpf(), associateRequestDto.getName());
-        associate = associateRepository.save(associate);
+        AssociateResponseDto associateResponseDto = new AssociateResponseDto(associateRepository.save(associate));
 
-        return new AssociateResponseDto(associate);
+        kafkaService.send(new AssociateCreatedEvent(associateResponseDto));
+
+        return associateResponseDto;
     }
 
     public Page<AssociateResponseDto> getAll(Pageable pageable) {
@@ -53,13 +63,18 @@ public class AssociateService {
         return associateRepository.findById(id).orElseThrow(AssociateNotFoundException::new);
     }
 
+    @EventListener
+    private void kafkaAssociateCreatedEvent(AssociateCreatedEvent event) {
+        CompletableFuture.runAsync(() -> log.info(String.format("-- Associate received via Kafka with [id=%s, name=%s]", event.payload.getId(), event.payload.getName())));
+    }
+
     private Boolean validateCpf(String cpf) {
 
         if (cpf.length() < 11) return false;
 
-        /**
-         * Integration with external API
-         * using OpenFeign to validate CPF
+        /*
+          Integration with external API
+          using OpenFeign to validate CPF
          */
         try {
             if (cpfServiceClient.getValidateCpf(cpf).getStatus().toString().equals(CpfResponseDto.Status.UNABLE_TO_VOTE.toString()))

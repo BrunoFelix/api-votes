@@ -70,8 +70,8 @@ public class AgendaIntegrationTest extends DatabaseContainerConfiguration {
     @DisplayName("When I try to create agenda valid Then agenda is created")
     public void createAgendaValid() throws Exception {
         mockMvc.perform(post(this.pathVersionEndpointApi)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(this.agendaRequestDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(this.agendaRequestDto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.id").exists())
@@ -160,7 +160,6 @@ public class AgendaIntegrationTest extends DatabaseContainerConfiguration {
                 .andExpect(jsonPath("$.content[0].result_votes[1].count").value(0))
                 .andExpect(jsonPath("$.total_elements").value(1));
     }
-
 
 
 }

@@ -29,7 +29,7 @@ public class VoteSession {
     @JoinColumn(name = "agenda_id")
     private Agenda agenda;
 
-    @OneToMany(mappedBy = "voteSession")
+    @OneToMany(mappedBy = "voteSession", fetch = FetchType.EAGER)
     private List<Vote> votes = new ArrayList<>();
 
     @Column(name = "created_at")

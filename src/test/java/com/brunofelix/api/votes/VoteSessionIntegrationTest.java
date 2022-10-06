@@ -69,8 +69,8 @@ public class VoteSessionIntegrationTest extends DatabaseContainerConfiguration {
         VoteSessionRequestDto voteSessionRequestDto = new VoteSessionRequestDto(this.agenda.getId(), closingAt);
 
         mockMvc.perform(post(this.pathVersionEndpointApi)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(voteSessionRequestDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(voteSessionRequestDto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.id").exists())

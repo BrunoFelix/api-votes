@@ -63,8 +63,8 @@ public class AssociateIntegrationTest extends DatabaseContainerConfiguration {
         when(CpfServiceClient.getValidateCpf(anyString())).thenReturn(new CpfResponseDto(CpfResponseDto.Status.ABLE_TO_VOTE));
 
         mockMvc.perform(post(this.pathVersionEndpointApi)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(this.associateRequestDto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(this.associateRequestDto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.id").exists())

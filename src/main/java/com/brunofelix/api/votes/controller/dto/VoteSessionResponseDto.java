@@ -40,4 +40,12 @@ public class VoteSessionResponseDto {
         this.votes = votes;
         this.ResultVotes = resultVotes;
     }
+
+    public VoteSessionResponseDto (VoteSession voteSession) {
+        this.id = voteSession.getId();
+        this.agendaId = voteSession.getAgenda().getId();
+        this.finished = voteSession.getFinished();
+        this.closingAt = voteSession.getClosingAt();
+        this.createdAt = voteSession.getCreatedAt();
+    }
 }
