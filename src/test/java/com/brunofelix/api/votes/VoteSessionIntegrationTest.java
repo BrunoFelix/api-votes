@@ -32,9 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class VoteSessionIntegrationTest extends DatabaseContainerConfiguration {
 
     @Autowired
-    public MockMvc mockMvc;
-
-    @Autowired
     public AssociateRepository associateRepository;
 
     @Autowired
