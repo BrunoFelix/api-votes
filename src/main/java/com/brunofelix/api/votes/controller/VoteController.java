@@ -26,17 +26,19 @@ public class VoteController {
         return voteService.create(voteRequestDto);
     }
 
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public Page<VoteResponseDto> getByAssociate(@PageableDefault(sort = "id", direction = Sort.Direction.ASC, size = Integer.MAX_VALUE) Pageable pageable) {
+        return voteService.getByAssociate(pageable);
+    }
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public VoteResponseDto getById(@PathVariable Long id) {
         return voteService.getById(id);
     }
 
-    @GetMapping("/associate/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Page<VoteResponseDto> getByAssociate(@PathVariable Long id, @PageableDefault(sort = "id", direction = Sort.Direction.ASC, size = Integer.MAX_VALUE) Pageable pageable) {
-        return voteService.getByAssociate(id, pageable);
-    }
+
 
 
 }

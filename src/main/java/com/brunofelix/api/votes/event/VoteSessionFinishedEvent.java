@@ -2,7 +2,6 @@ package com.brunofelix.api.votes.event;
 
 import com.brunofelix.api.votes.controller.dto.VoteResultDto;
 import com.brunofelix.api.votes.controller.dto.VoteSessionResponseDto;
-import com.brunofelix.api.votes.model.VoteSession;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

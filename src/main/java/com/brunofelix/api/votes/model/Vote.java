@@ -1,6 +1,5 @@
 package com.brunofelix.api.votes.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,14 +9,15 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "vote")
+@Table(name = "vote",
+        uniqueConstraints = {@UniqueConstraint(name = "UK_associate_vote", columnNames = {"associate_id", "vote_session_id"})})
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class Vote {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -37,7 +37,7 @@ public class Vote {
 
     public enum Value {
         YES,
-        NO;
+        NO
     }
 
     public Vote(Value value, Associate associate, VoteSession voteSession) {

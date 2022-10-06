@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 public class VoteResultDto {
 
     private Vote.Value value;
-
     private Long count;
 }

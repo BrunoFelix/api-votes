@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,7 +35,6 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
     @Autowired
     public ObjectMapper objectMapper;
 
-    //repositories
     @Autowired
     public AssociateRepository associateRepository;
 
@@ -49,7 +47,6 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
     @Autowired
     public VoteRepository voteRepository;
 
-    //Models
     private Associate associate;
 
     private Agenda agenda;
@@ -84,7 +81,6 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.associate_id").value(savedAssociate.getId()))
-                .andExpect(jsonPath("$.agenda_id").value(savedAgenda.getId()))
                 .andExpect(jsonPath("$.vote_session_id").value(savedVoteSession.getId()))
                 .andExpect(jsonPath("$.value").value(voteRequestDto.getValue().toString()))
                 .andExpect(jsonPath("$.created_at").exists());
@@ -93,7 +89,6 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
         assertEquals(votes.size(), 1);
         assertEquals(votes.get(0).getAssociate().getId(), savedAssociate.getId());
         assertEquals(votes.get(0).getAssociate().getCpf(), savedAssociate.getCpf());
-        assertEquals(votes.get(0).getVoteSession().getAgenda().getId(), savedAgenda.getId());
         assertEquals(votes.get(0).getVoteSession().getId(), savedVoteSession.getId());
         assertEquals(votes.get(0).getValue(), voteRequestDto.getValue());
     }
@@ -193,7 +188,6 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.id").value(vote.getId()))
                 .andExpect(jsonPath("$.associate_id").value(savedAssociate.getId()))
-                .andExpect(jsonPath("$.agenda_id").value(savedAgenda.getId()))
                 .andExpect(jsonPath("$.vote_session_id").value(savedVoteSession.getId()))
                 .andExpect(jsonPath("$.value").value(voteRequestDto.getValue().toString()))
                 .andExpect(jsonPath("$.created_at").exists());
@@ -201,7 +195,6 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
         Vote dbVote = voteRepository.findById(vote.getId()).orElse(new Vote());
         assertEquals(dbVote.getId(), vote.getId());
         assertEquals(dbVote.getAssociate().getId(), savedAssociate.getId());
-        assertEquals(dbVote.getVoteSession().getAgenda().getId(), savedAgenda.getId());
         assertEquals(dbVote.getVoteSession().getId(), savedVoteSession.getId());
         assertEquals(dbVote.getValue(), voteRequestDto.getValue());
     }
@@ -219,7 +212,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
     }
 
     @Test
-    @DisplayName("When I try to get vote by associate Then the list is returned")
+    @DisplayName("When I try to get all vote Then the list is returned")
     public void getByAssociate() throws Exception {
         Associate savedAssociate = associateRepository.save(new Associate("20535141084", "Associate test"));
 
@@ -230,7 +223,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
 
         Vote vote = voteRepository.save(new Vote(voteRequestDto.getValue(), savedAssociate, savedVoteSession));
 
-        mockMvc.perform(get(this.pathVersionEndpointApi + "/associate/{id}", savedAssociate.getId())
+        mockMvc.perform(get(this.pathVersionEndpointApi)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
@@ -239,7 +232,7 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
                 .andExpect(jsonPath("$.content[0].value").value(vote.getValue().toString()))
                 .andExpect(jsonPath("$.total_elements").value(1));
 
-        Page<Vote> dbVotes = voteRepository.findByAssociate(savedAssociate, Pageable.ofSize(1));
+        Page<Vote> dbVotes = voteRepository.findAll(Pageable.ofSize(99));
         assertEquals(dbVotes.getContent().size(), 1);
         assertEquals(dbVotes.getContent().get(0).getId(), vote.getId());
         assertEquals(dbVotes.getContent().get(0).getValue(), vote.getValue());

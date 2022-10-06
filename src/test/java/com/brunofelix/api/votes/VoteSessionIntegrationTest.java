@@ -33,13 +33,10 @@ public class VoteSessionIntegrationTest extends DatabaseContainerConfiguration {
 
     @Autowired
     public AssociateRepository associateRepository;
-
     @Autowired
     public AgendaRepository agendaRepository;
-
     @Autowired
     public VoteSessionRepository voteSessionRepository;
-
     @Autowired
     public VoteRepository voteRepository;
 
@@ -57,6 +54,7 @@ public class VoteSessionIntegrationTest extends DatabaseContainerConfiguration {
         voteSessionRepository.deleteAll();
         agendaRepository.deleteAll();
         associateRepository.deleteAll();
+
         this.agenda = new Agenda("Agenda test");
     }
 

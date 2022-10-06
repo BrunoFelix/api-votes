@@ -33,7 +33,7 @@ public class AgendaService {
     public AgendaResponseDto create(AgendaRequestDto agendaRequestDto) {
         Agenda agenda = new Agenda(agendaRequestDto.getDescription());
 
-        AgendaResponseDto agendaResponseDto = new AgendaResponseDto(agendaRepository.save(agenda), null);
+        AgendaResponseDto agendaResponseDto = new AgendaResponseDto(agendaRepository.save(agenda));
 
         kafkaService.send(new AgendaCreatedEvent(agendaResponseDto));
 

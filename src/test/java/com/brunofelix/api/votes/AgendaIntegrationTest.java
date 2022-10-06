@@ -31,17 +31,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AgendaIntegrationTest extends DatabaseContainerConfiguration {
 
     @Autowired
-    public MockMvc mockMvc;
-
-    @Autowired
     public AgendaRepository agendaRepository;
-
     @Autowired
     public AssociateRepository associateRepository;
-
     @Autowired
     public VoteSessionRepository voteSessionRepository;
-
     @Autowired
     public VoteRepository voteRepository;
 
@@ -49,7 +43,6 @@ public class AgendaIntegrationTest extends DatabaseContainerConfiguration {
     public ObjectMapper objectMapper;
 
     private Agenda agenda;
-
     private AgendaRequestDto agendaRequestDto;
 
     @Value("${api.path.version.agenda}")
@@ -58,10 +51,12 @@ public class AgendaIntegrationTest extends DatabaseContainerConfiguration {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+
         voteRepository.deleteAll();
         voteSessionRepository.deleteAll();
         agendaRepository.deleteAll();
         associateRepository.deleteAll();
+
         this.agendaRequestDto = new AgendaRequestDto("Agenda test");
         this.agenda = new Agenda("Agenda test");
     }

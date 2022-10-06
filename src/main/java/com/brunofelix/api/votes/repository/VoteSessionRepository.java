@@ -13,6 +13,5 @@ import java.util.Optional;
 public interface VoteSessionRepository extends JpaRepository<VoteSession, Long> {
 
     Optional<VoteSession> findByAgenda(Agenda agenda);
-
     List<VoteSession> findByClosingAtBeforeAndFinished(LocalDateTime date, Boolean finished);
 }

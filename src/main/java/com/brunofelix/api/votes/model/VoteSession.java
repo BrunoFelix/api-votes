@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "vote_session")
+@Table(name = "vote_session", uniqueConstraints = {@UniqueConstraint(name = "UK_agenda", columnNames = {"agenda_id"})})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class VoteSession {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "closing_at")

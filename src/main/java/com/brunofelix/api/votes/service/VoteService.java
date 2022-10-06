@@ -60,9 +60,8 @@ public class VoteService {
         return new VoteResponseDto(this.findById(id));
     }
 
-    public Page<VoteResponseDto> getByAssociate(Long id, Pageable pageable) {
-        Associate associate = associateService.findById(id);
-        return voteRepository.findByAssociate(associate, pageable).map(VoteResponseDto::new);
+    public Page<VoteResponseDto> getByAssociate(Pageable pageable) {
+        return voteRepository.findAll(pageable).map(VoteResponseDto::new);
     }
 
     protected Vote findById(Long id) {

@@ -28,18 +28,16 @@ public class VoteSessionServiceTest {
 
     @Mock
     private VoteSessionRepository voteSessionRepository;
-
     @Mock
     private AgendaService agendaService;
+    @Mock
+    private KafkaService kafkaService;
 
     @InjectMocks
     private VoteSessionService voteSessionService;
 
-    //models
     private VoteSessionRequestDto voteSessionRequestDto;
-
     private VoteSession voteSession;
-
     private Agenda agenda;
 
     @BeforeEach

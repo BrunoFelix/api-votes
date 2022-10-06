@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -22,18 +23,19 @@ public class AgendaServiceTest {
 
     @Mock
     private AgendaRepository agendaRepository;
+    @Mock
+    private KafkaService kafkaService;
 
     @InjectMocks
     private AgendaService agendaService;
 
-    //models
     private AgendaRequestDto agendaRequestDto;
-
     private Agenda agenda;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+
         this.agendaRequestDto = new AgendaRequestDto("Agenda Test");
         this.agenda = new Agenda(this.agendaRequestDto.getDescription());
         this.agenda.setId(1L);
@@ -43,6 +45,7 @@ public class AgendaServiceTest {
     @Test
     void shouldRegisterNewAgenda() {
         Mockito.when(agendaRepository.save(any())).thenReturn(this.agenda);
+
         AgendaResponseDto agendaResponseDto = agendaService.create(this.agendaRequestDto);
 
         Assertions.assertEquals(agendaResponseDto.getId(), this.agenda.getId());

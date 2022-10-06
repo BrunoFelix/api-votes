@@ -25,28 +25,22 @@ public class VoteServiceTest {
 
     @Mock
     private VoteRepository voteRepository;
-
     @Mock
     private AgendaService agendaService;
-
     @Mock
     private AssociateService associateService;
-
     @Mock
     private VoteSessionService voteSessionService;
+    @Mock
+    private KafkaService kafkaService;
 
     @InjectMocks
     private VoteService voteService;
 
-
     private VoteRequestDto voteRequestDto;
-
     private VoteSession voteSession;
-
     private Agenda agenda;
-
     private Associate associate;
-
     private Vote vote;
 
     @BeforeEach
@@ -85,7 +79,6 @@ public class VoteServiceTest {
         VoteResponseDto voteResponseDto = voteService.create(this.voteRequestDto);
 
         Assertions.assertEquals(voteResponseDto.getId(), this.vote.getId());
-        Assertions.assertEquals(voteResponseDto.getAgendaId(), this.voteSession.getAgenda().getId());
         Assertions.assertEquals(voteResponseDto.getAssociateId(), this.associate.getId());
         Assertions.assertEquals(voteResponseDto.getVoteSessionId(), this.voteSession.getId());
         Assertions.assertEquals(voteResponseDto.getValue(), Vote.Value.YES);

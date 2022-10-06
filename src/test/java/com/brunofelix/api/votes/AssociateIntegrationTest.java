@@ -30,9 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AssociateIntegrationTest extends DatabaseContainerConfiguration {
 
     @Autowired
-    public MockMvc mockMvc;
-
-    @Autowired
     public AssociateRepository associateRepository;
 
     @MockBean
@@ -51,7 +48,9 @@ public class AssociateIntegrationTest extends DatabaseContainerConfiguration {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+
         associateRepository.deleteAll();
+
         associateRequestDto = new AssociateRequestDto("20535141084", "Associate test");
         associate = new Associate("79440319070", "Associate test");
     }

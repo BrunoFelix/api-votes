@@ -26,22 +26,22 @@ public class AssociateServiceTest {
 
     @Mock
     private AssociateRepository associateRepository;
-
     @Mock
     private CpfServiceClient cpfServiceClient;
+    @Mock
+    private KafkaService kafkaService;
 
     @InjectMocks
     private AssociateService associateService;
 
-    //models
     private AssociateRequestDto associateRequestDto;
-
     private Associate associate;
 
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+
         this.associateRequestDto = new AssociateRequestDto("62566743088", "Test");
         this.associate = new Associate(this.associateRequestDto.getCpf(), this.associateRequestDto.getName());
         this.associate.setId(1L);
