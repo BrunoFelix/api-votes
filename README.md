@@ -16,7 +16,7 @@ No diretório raiz do repositório deve-se executar o seguinte comando:
 Caso queira rodar via command line:
 
 ```sh
-./gradlew bootRun
+    ./gradlew bootRun
 ```
 
 ## Dependências/Tecnologias utilizadas
@@ -84,6 +84,15 @@ base de dados MySQL somente para os testes. Utilizei também o Kafka como sistem
 
 ## Desafio Técnico
 
+Feito conforme solicitado, o associado precisa ser cadastrado previamente antes de efetuar seu voto, no seu cadastro será validado seu CPF, caso esteja inválido, não poderá se cadastrar e consequentemente não poderá votar. Após seu cadastro, utilizaremos o id do mesmo para outras ações no sistema, já que CPF é uma informação pessoal e não deve ser utilizada para esse fim. Retornei o resultado da votação tanto na agenda quando na sessão.
+
+Utilizei o banco de dados MySQL pois é um dos mais utilizados do mercado, mas como estou utilizando spring data JPA poderia ser outro SQL. 
+Utilizei o testContainers pois acho que facilita bastante o teste, além que de ele sozinho sobe uma intância docker do banco e ao final dos testes ele mesmo apaga, sendo assim não precisamos ficar nos preocupando com os dados gerados.
+Utilizei JMeter para teste de performance pois é OpenSource e mais simples de utilizar rapidamente.
+
+As mensagens dos commits seguiram o padrão do Conventional Commits (https://www.conventionalcommits.org/en/v1.0.0/).
+A versão da API seguiu o padrão do Semantic Versioning (https://semver.org/).
+
 ### Tarefa Bônus 1 - Integração com sistemas externos
 
 Realizado utilizando OpenFeign, a interface está dentro do package com.brunofelix.api.votes.service.client;
@@ -106,7 +115,7 @@ Resultado - 300 Requests:
 Obs: teste realizado na minha máquina (i5-7300HQ 2.50 GHz, 8GB);
 ![image](https://user-images.githubusercontent.com/11357706/194333289-433b2086-4537-40cc-8588-d5e5919df847.png)
 
-Uma boa ferramenta para monitoramento de performance é o ElasticAPM, porém é paga.
+Uma boa ferramenta para monitoramento de performance durante o uso do sistema é o ElasticAPM, porém é paga.
 
 ### Tarefa Bônus 4 - Versionamento da API
 
