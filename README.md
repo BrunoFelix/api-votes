@@ -16,9 +16,6 @@ No diretório raiz do repositório deve-se executar o seguinte comando:
 Caso queira rodar via command line:
 
 ```sh
-./gradlew build
-```
-```sh
 ./gradlew bootRun
 ```
 
@@ -77,12 +74,13 @@ base de dados MySQL somente para os testes. Utilizei também o Kafka como sistem
 
 - **Sessão de votação (vote session):**
     - [POST] /v1/vote-session
+    - [GET] /v1/vote-session
     - [GET] /v1/vote-session/{id}
-    - [GET] /v1/vote-session/result
   
 - **Vote (vote):**
-    - [POST] /v1/vote-session
-    - [GET] /v1/vote-session/{id}
+    - [POST] /v1/vote
+    - [GET] /v1/vote
+    - [GET] /v1/vote/{id}
 
 ## Desafio Técnico
 
@@ -99,7 +97,16 @@ sessões de votações encerradas e enviar o resultado como um evento no kafka.
 
 ### Tarefa Bônus 3 - Performance
 
-Em desenvolvimento
+Utilizei o JMeter para realizar os testes de performance, testei dois endpoins principais do sistema, Get Associates (com 5 registros) e POST Vote.
+
+Resultado - 300 Requests:
+[Get] /v1/associate: Tempo médio de resposta de 627ms. Vazão de 80 requests por segundos. Taxa de erro de 0%;
+[POST] /v1/vote: Tempo médio de resposta de 1535ms. Vazão de 68.5 requests por segundos. Taxa de erro de 0%;
+
+Obs: teste realizado na minha máquina (i5-7300HQ 2.50 GHz, 8GB);
+![image](https://user-images.githubusercontent.com/11357706/194333289-433b2086-4537-40cc-8588-d5e5919df847.png)
+
+Uma boa ferramenta para monitoramento de performance é o ElasticAPM, porém é paga.
 
 ### Tarefa Bônus 4 - Versionamento da API
 
