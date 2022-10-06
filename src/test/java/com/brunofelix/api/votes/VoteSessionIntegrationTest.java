@@ -1,6 +1,7 @@
 package com.brunofelix.api.votes;
 
 import com.brunofelix.api.votes.controller.dto.VoteSessionRequestDto;
+import com.brunofelix.api.votes.event.VoteSessionCreatedEvent;
 import com.brunofelix.api.votes.exception.AgendaNotFoundException;
 import com.brunofelix.api.votes.exception.VoteSessionClosingAtInvalidException;
 import com.brunofelix.api.votes.model.Agenda;
@@ -11,19 +12,22 @@ import com.brunofelix.api.votes.repository.AgendaRepository;
 import com.brunofelix.api.votes.repository.AssociateRepository;
 import com.brunofelix.api.votes.repository.VoteRepository;
 import com.brunofelix.api.votes.repository.VoteSessionRepository;
+import com.brunofelix.api.votes.service.KafkaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,6 +43,9 @@ public class VoteSessionIntegrationTest extends DatabaseContainerConfiguration {
     public VoteSessionRepository voteSessionRepository;
     @Autowired
     public VoteRepository voteRepository;
+
+    @MockBean
+    private KafkaService kafkaService;
 
     @Autowired
     public ObjectMapper objectMapper;
@@ -88,6 +95,7 @@ public class VoteSessionIntegrationTest extends DatabaseContainerConfiguration {
         assertEquals(voteSessions.get(0).getCreatedAt().getHour(), LocalDateTime.now().getHour());
         assertEquals(voteSessions.get(0).getCreatedAt().getMinute(), LocalDateTime.now().getMinute());
 
+        verify(kafkaService).send(any(VoteSessionCreatedEvent.class));
     }
 
     @Test

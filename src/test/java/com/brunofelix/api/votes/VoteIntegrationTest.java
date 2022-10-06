@@ -1,6 +1,7 @@
 package com.brunofelix.api.votes;
 
 import com.brunofelix.api.votes.controller.dto.VoteRequestDto;
+import com.brunofelix.api.votes.event.VoteCreatedEvent;
 import com.brunofelix.api.votes.exception.*;
 import com.brunofelix.api.votes.model.Agenda;
 import com.brunofelix.api.votes.model.Associate;
@@ -10,12 +11,14 @@ import com.brunofelix.api.votes.repository.AgendaRepository;
 import com.brunofelix.api.votes.repository.AssociateRepository;
 import com.brunofelix.api.votes.repository.VoteRepository;
 import com.brunofelix.api.votes.repository.VoteSessionRepository;
+import com.brunofelix.api.votes.service.KafkaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -25,6 +28,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -37,15 +42,15 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
 
     @Autowired
     public AssociateRepository associateRepository;
-
     @Autowired
     public AgendaRepository agendaRepository;
-
     @Autowired
     public VoteSessionRepository voteSessionRepository;
-
     @Autowired
     public VoteRepository voteRepository;
+
+    @MockBean
+    private KafkaService kafkaService;
 
     private Associate associate;
 
@@ -91,6 +96,8 @@ public class VoteIntegrationTest extends DatabaseContainerConfiguration {
         assertEquals(votes.get(0).getAssociate().getCpf(), savedAssociate.getCpf());
         assertEquals(votes.get(0).getVoteSession().getId(), savedVoteSession.getId());
         assertEquals(votes.get(0).getValue(), voteRequestDto.getValue());
+
+        verify(kafkaService).send(any(VoteCreatedEvent.class));
     }
 
     @Test

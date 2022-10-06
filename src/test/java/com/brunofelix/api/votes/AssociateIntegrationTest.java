@@ -1,11 +1,14 @@
 package com.brunofelix.api.votes;
 
 import com.brunofelix.api.votes.controller.dto.AssociateRequestDto;
+import com.brunofelix.api.votes.event.AgendaCreatedEvent;
+import com.brunofelix.api.votes.event.AssociateCreatedEvent;
 import com.brunofelix.api.votes.exception.AssociateNotFoundException;
 import com.brunofelix.api.votes.exception.CpfAlreadyRegisteredException;
 import com.brunofelix.api.votes.exception.CpfInvalidException;
 import com.brunofelix.api.votes.model.Associate;
 import com.brunofelix.api.votes.repository.AssociateRepository;
+import com.brunofelix.api.votes.service.KafkaService;
 import com.brunofelix.api.votes.service.client.CpfServiceClient;
 import com.brunofelix.api.votes.service.client.dto.CpfResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +23,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -34,6 +39,9 @@ public class AssociateIntegrationTest extends DatabaseContainerConfiguration {
 
     @MockBean
     public CpfServiceClient CpfServiceClient;
+
+    @MockBean
+    private KafkaService kafkaService;
 
     @Autowired
     public ObjectMapper objectMapper;
@@ -70,6 +78,8 @@ public class AssociateIntegrationTest extends DatabaseContainerConfiguration {
                 .andExpect(jsonPath("$.cpf").value(this.associateRequestDto.getCpf()))
                 .andExpect(jsonPath("$.name").value(this.associateRequestDto.getName()))
                 .andExpect(jsonPath("$.created_at").exists());
+
+        verify(kafkaService).send(any(AssociateCreatedEvent.class));
     }
 
     @Test
