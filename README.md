@@ -123,4 +123,4 @@ Realizado, através do versionamento da URL, a especificação da versão fica n
 
 {url}/**v1**/associate
 
-Utilizei essa abordagem, pois além de dar um visual mais clean na URL, facilita a navegação para outras versões da API
+Utilizei essa abordagem, pois além de dar um visual mais clean na URL, facilita a navegação para outras versões da API.
